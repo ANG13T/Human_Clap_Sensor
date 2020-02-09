@@ -3,6 +3,7 @@
 
 int Sensor = A0;
 int LED = 3;
+int pirSensor = 4;
 
 int clap = 0;
 long detection_range_start = 0;
@@ -11,6 +12,7 @@ boolean status_lights = false;
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7);
 
 void setup() {
+  Serial.begin(9600);
   lcd.begin(16,2);
   lcd.setBacklightPin(3,POSITIVE);
   lcd.setBacklight(LOW);
@@ -18,10 +20,13 @@ void setup() {
   lcd.setCursor(0,0);
   pinMode(Sensor, INPUT);
   pinMode(LED, OUTPUT);
+  pinMode(pirSensor, INPUT);
 }
 
 void loop() {
 int status_sensor = digitalRead(Sensor);
+int pir_sensor_value = digitalRead(pirSensor);
+
 if (status_sensor == 0){
   if (clap == 0){
     detection_range_start = detection_range = millis();
@@ -33,7 +38,7 @@ if (status_sensor == 0){
 }
 
 if (millis()-detection_range_start >= 400){
-  if (clap == 2){
+  if (clap == 1 && pir_sensor_value == 1){
     if (!status_lights){
       status_lights = true;
       digitalWrite(LED, HIGH);

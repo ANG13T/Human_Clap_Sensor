@@ -8,13 +8,14 @@ int clap = 0;
 long detection_range_start = 0;
 long detection_range = 0;
 boolean status_lights = false;
-LiquidCrystal_I2C lcd(0x27,2,1,0);
+LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7);
 
 void setup() {
-  Serial.begin(9600);
-  lcd.begin();
+  lcd.begin(16,2);
+  lcd.setBacklightPin(3,POSITIVE);
+  lcd.setBacklight(LOW);
+  lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("hello");
   pinMode(Sensor, INPUT);
   pinMode(LED, OUTPUT);
 }
@@ -36,9 +37,13 @@ if (millis()-detection_range_start >= 400){
     if (!status_lights){
       status_lights = true;
       digitalWrite(LED, HIGH);
+      lcd.setBacklight(HIGH);
+      lcd.println("Welcome!");
     } else if (status_lights) {
         status_lights = false;
         digitalWrite(LED, LOW);
+        lcd.clear();
+        lcd.setBacklight(LOW);
      }
   }
   clap = 0;
